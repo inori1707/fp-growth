@@ -16,7 +16,7 @@ __author__ = 'Eric Naeseth <eric@naeseth.com>'
 __copyright__ = 'Copyright © 2009 Eric Naeseth'
 __license__ = 'MIT License'
 
-def find_frequent_itemsets(transactions, minimum_support, include_support=False):
+def find_frequent_itemsets(transactions, minimum_support, getPos, include_support=False):
     """
     Find frequent itemsets in the given transactions using FP-growth. This
     function returns a generator instead of an eagerly-populated list of items.
@@ -51,30 +51,30 @@ def find_frequent_itemsets(transactions, minimum_support, include_support=False)
         transaction.sort(key=lambda v: items[v], reverse=True)
         return transaction
 
-    def item_type(item):
-        if 'www' in item:
-            return 'WEB'
-        else:
-            return 'BGP'
+    # def item_type(item):
+    #     if 'www' in item:
+    #         return 'WEB'
+    #     else:
+    #         return 'BGP'
 
     master = FPTree()
     for transaction in map(clean_transaction, transactions):
-        bgp = []
-        web = []
+        ante = []
+        cons = []
 
         for item in transaction:
-            if item_type(item) == 'WEB':
-                web.append(item)
+            if getPos(item) == 'ante':
+                ante.append(item)
             else:
-                bgp.append(item)
+                cons.append(item)
         
-        for e in web:
-            master.add(bgp + [e])
+        for e in cons:
+            master.add(ante + [e])
         # master.add(transaction)
 
     def find_with_suffix(tree, suffix):
         for item, nodes in tree.items():
-            if item_type(item) == 'BGP' and len(suffix) == 0:
+            if getPos(item) == 'ante' and len(suffix) == 0:
                 continue
 
             support = sum(n.count for n in nodes)
