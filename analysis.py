@@ -1,5 +1,4 @@
 #coding=utf8
-#
 import json
 import pandas as pd
 from datetime import datetime
@@ -85,19 +84,19 @@ def gen_rules(cons_fp, ante_fp, mincof, getPos):
     v_rules = []
     for r in rules:
         flag = False
-        for vr in v_rules:
-            if r[1] == vr[1] and set(vr[0]) > set(r[0]):
-                flag = True
-                break
+        # for vr in v_rules:
+        #     if r[1] == vr[1] and set(vr[0]) > set(r[0]):
+        #         flag = True
+        #         break
 
         if flag:
             continue
         v_rules.append(r)
     rules = v_rules
-    print len(rules)
     rules.sort(key=lambda r: r[3], reverse=True)
     for r in rules:
         print r[0], '===>', r[1], (r[2], r[3])
+    print 'rules', len(rules)
     return rules
 
 
@@ -147,7 +146,7 @@ def analysis_test(minsupp=-8, minconf=0.8, dataset=None):
     print 'begin fpg %s' % starttime.isoformat()
     fp = []
     for itemset, support in orginal_fpg(transactions, minsupp, True):
-        fp.append((itemset,support))
+        fp.append((itemset, float(support)))
 
     fp = sorted(fp, key=lambda i: i[0])
 
@@ -270,13 +269,13 @@ def fpg_comparison():
 
 
 if __name__ == '__main__':
-    main()
+    # main()
     # test()
     # pyfim_test(1, prun=False)
     # supp_test()
     # db_test()
     # fpg_comparison()
-    # pcfpg_test()
+    pcfpg_test()
     # analysis_test(minsupp=30,dataset='D20T4I4.txt')
     # analysis_test(minsupp=15)
     # test()
